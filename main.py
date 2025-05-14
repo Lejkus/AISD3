@@ -81,10 +81,54 @@ class Graph:
         tikz_lines.append("")
         tikz_lines.append("\\end{document}")
 
-        with open("graph_output.tex", "w") as f:
+        with open("graph.tex", "w") as f:
             f.write("\n".join(tikz_lines))
-        print("Saved to graph_output.tex")
 
+    def kahn_topological_sort(self):
+        in_degree = [0] * self.nodes
+        for u in range(self.nodes):
+            for v in self.adj_list[u]:
+                in_degree[v] += 1
+
+        queue = deque([u for u in range(self.nodes) if in_degree[u] == 0])
+        topo_order = []
+
+        while queue:
+            u = queue.popleft()
+            topo_order.append(u)
+            for v in self.adj_list[u]:
+                in_degree[v] -= 1
+                if in_degree[v] == 0:
+                    queue.append(v)
+
+        if len(topo_order) != self.nodes:
+            print("Graph has at least one cycle")
+        else:
+            print("Topological order (Kahn):", " ".join(map(str, topo_order)))
+
+    def tarjan_topological_sort(self):
+        visited = [0] * self.nodes  # 0 = unvisited, 1 = temporary, 2 = permanent
+        topo_order = []
+
+        def visit(u):
+            if visited[u] == 2:
+                return
+            if visited[u] == 1:
+                raise ValueError("Graph has at least one cycle")
+            visited[u] = 1
+            for v in self.adj_list[u]:
+                visit(v)
+            visited[u] = 2
+            topo_order.append(u)
+
+        try:
+            for u in range(self.nodes):
+                if visited[u] == 0:
+                    visit(u)
+            topo_order.reverse()
+            print("Topological order (Tarjan):", " ".join(map(str, topo_order)))
+        except ValueError as e:
+            print(e)
 
 def main():
     parser = argparse.ArgumentParser()
@@ -141,6 +185,10 @@ def main():
             print("inline:", " ".join(map(str, graph.dfs(start))))
         elif action == "tikz":
             graph.to_tikz()
+        elif action == "kahn":
+            graph.kahn_topological_sort()
+        elif action == "tarjan":
+            graph.tarjan_topological_sort()
         elif action == "exit":
             break
         else:
