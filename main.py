@@ -39,7 +39,7 @@ class Graph:
 
     def start(self):
         if self.nodes == 0:
-            raise RuntimeError("Cannot perform BFS on empty graph")
+            raise RuntimeError("Nie można pracować na pustym grafie")
         stopien = [0] * self.nodes
         for u in range(self.nodes):
             for v in self.adj_list[u]:
@@ -132,6 +132,8 @@ class Graph:
             print("Sortowanie topologiczne (Kahn):", " ".join(map(str, topo_order)))
 
     def tarjan_sort(self):
+        if self.nodes == 0:
+            raise RuntimeError("Nie można pracować na pustym grafie")
         marks = [0] * self.nodes
         result = []
         cykle = False
@@ -204,7 +206,7 @@ def main():
                 for v in neighbors:
                     graph.add_edge(u-1, v-1)
     else:
-        print("Provide either --generate or --user-provided")
+        print("Podaj --generate lub --user-provided")
         return
 
     print("\nOperacje na grafach:")
@@ -224,7 +226,7 @@ def main():
 
             match action:
                 case "print":
-                    rep = input("representation? matrix/list/table > ").strip().lower()
+                    rep = input("representation: matrix/list/table > ").strip().lower()
                     match rep:
                         case "matrix":
                             graph.print_matrix(nodes)
@@ -233,7 +235,7 @@ def main():
                         case "table":
                             graph.print_table()
                         case _:
-                            print("Invalid representation type")
+                            print("Oj, takiego typu tutaj nie mamy")
 
                 case "find":
                     w = int(input("from> "))
@@ -258,9 +260,9 @@ def main():
                 case _:
                     print("Nie ma takiej opcji!")
         except ValueError:
-            print("Invalid input - please enter numbers where required")
+            print("Nie takie dane")
         except Exception as e:
-            print(f"An error occurred: {e}")
+            print(f"Błąd: {e}")
 
 if __name__ == '__main__':
     main()
