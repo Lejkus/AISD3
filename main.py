@@ -28,7 +28,7 @@ class Graph:
 
     def print_list(self):
         for i, neighbors in enumerate(self.adj_list):
-            print(f"{i+1}: {' '.join(map(str, neighbors))}")
+            print(f"{i}: {' '.join(map(str, neighbors))}")
 
     def print_table(self):
         for u, v in self.edge_list:
@@ -138,7 +138,7 @@ class Graph:
         result = []
         cykle = False
 
-        def visit(n):
+        def odwiedz(n):
             nonlocal cykle
             if marks[n] == 2:
                 return
@@ -147,7 +147,7 @@ class Graph:
                 return
             marks[n] = 1
             for neighbor in self.adj_list[n]:
-                visit(neighbor)
+                odwiedz(neighbor)
                 if cykle:
                     return
             marks[n] = 2
@@ -155,7 +155,7 @@ class Graph:
 
         for node in range(self.nodes):
             if marks[node] == 0:
-                visit(node)
+                odwiedz(node)
                 if cykle:
                     break
 
